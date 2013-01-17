@@ -1,7 +1,7 @@
 <?php
 
 /**
-* ATS — A web development framework
+* SpinDash — A web development framework
 * © 2007–2013 Ilya I. Averkov <admin@jsmart.web.id>
 *
 * Contributors:
@@ -9,7 +9,7 @@
 * Evgeny Bulgakov <evgeny@webline-masters.ru>
 */
 
-namespace ATS;
+namespace SpinDash;
 
 final class RSSFeed
 {
