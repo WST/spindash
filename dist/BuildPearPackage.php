@@ -50,7 +50,7 @@ class BuildPearPackage extends MatchingTask
 		$package = new PEAR_PackageFileManager2();
 		$this->setOptions($package);
 		$package->setPackage('spindash');
-		$package->setSummary('Simple web development framework used by SmartCommunity and Webline Masters staff');
+		$package->setSummary('Simple web development framework');
 		$package->setDescription('Simple web development framework used by SmartCommunity and Webline Masters staff. It makes it possible to charge a spin dash before starting to write a web application.');
 		$package->setChannel('pear.averkov.net');
 		$package->setPackageType('php');
