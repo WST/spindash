@@ -67,7 +67,7 @@ class BuildPearPackage extends MatchingTask
 		$package->addRelease();
 		$package->setPhpDep('5.4.0');
 		$package->setPearinstallerDep('1.4.0');
-		$package->addPackageDepWithChannel('required', 'phing', 'pear.phing.info', '2.3.0');
+		$package->addPackageDepWithChannel('required', 'Twig', 'pear.twig-project.org', '1.12.1');
 		$package->addExtensionDep('required', 'pdo');
 		$package->addExtensionDep('required', 'mbstring');
 		$package->generateContents();
