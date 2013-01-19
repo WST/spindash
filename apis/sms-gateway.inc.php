@@ -11,17 +11,16 @@
 
 namespace SpinDash;
 
-final class SMSGateway
+final class SMSGateway extends CoreModule
 {
 	private $username = '';
 	private $password = '';
-	private $base = NULL;
 	private $sender_id = '';
 
-	public function __construct(ATS $base, $username, $password) {
+	public function __construct(API $base, $username, $password) {
+		parent::__construct($base);
 		$this->username = $username;
 		$this->password = $password;
-		$this->base = $base;
 	}
 	
 	public function setSenderId($sender_id) {
