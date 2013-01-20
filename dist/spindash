@@ -1,0 +1,16 @@
+#!/usr/bin/php
+
+<?php
+
+class CLIUtility()
+{
+	public function __construct() {
+		
+	}
+	
+	public function __invoke() {
+		return new self();
+	}
+}
+
+CLIUtility()->run();
