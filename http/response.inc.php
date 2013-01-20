@@ -19,7 +19,7 @@ final class Response
 	private $content_type = 'text/html;charset=utf-8';
 	
 	private $ready = false;
-	private $frontend = API::ATS_FRONTEND_BASIC;
+	private $frontend = API::FRONTEND_BASIC;
 	
 	public function __construct($frontend) {
 		$this->frontend = $frontend;
@@ -63,7 +63,7 @@ final class Response
 	
 	public function send() {
 		switch($this->frontend) {
-			case API::ATS_FRONTEND_BASIC:
+			case API::FRONTEND_BASIC:
 				header("HTTP/1.1 {$this->status} {$this->statusDescription()}");
 				header("Content-Type: {$this->content_type}");
 				
@@ -73,7 +73,7 @@ final class Response
 				
 				echo $this->body;
 			break;
-			case API::ATS_FRONTEND_FASTCGI:
+			case API::FRONTEND_FASTCGI:
 				// TODO
 			break;
 		}

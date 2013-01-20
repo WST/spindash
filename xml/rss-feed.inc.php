@@ -11,7 +11,7 @@
 
 namespace SpinDash;
 
-final class RSSFeed
+final class RSSFeed extends CoreModule
 {
 	private $items = array();
 	
@@ -21,8 +21,8 @@ final class RSSFeed
 	private $description = '';
 	private $copyright = '';
 	
-	public function __construct($address = NULL) {
-		
+	public function __construct(API $base, $address = NULL) {
+		parent::__construct($base);
 	}
 	
 	public function items() {
@@ -42,7 +42,7 @@ final class RSSFeed
 		$copyright = htmlspecialchars($this->copyright);
 		
 		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\">";
-		$result .= "<channel><generator>ATS by http://averkov.web.id</generator><title>{$title}</title><link>{$link}</link><description>{$description}</description><language>{$language}</language><copyright>{$copyright}</copyright>";
+		$result .= "<channel><generator>Spin Dash &lt;http://averkov.web.id/projects/spindash&gt;</generator><title>{$title}</title><link>{$link}</link><description>{$description}</description><language>{$language}</language><copyright>{$copyright}</copyright>";
 		$result .= implode('', $this->items);
 		$result .= "</channel></rss>";
 		

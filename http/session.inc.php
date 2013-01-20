@@ -41,9 +41,9 @@ final class Session extends CoreModule
 		$this->logged_in = false;
 		$this->login_callback = array($this, 'loginDefault');
 		
-		if(@ $_SESSION['ATS_LOGGED_IN'] == 'yes') {
+		if(@ $_SESSION['SPINDASH_LOGGED_IN'] == 'yes') {
 			$this->logged_in = true;
-			$this->username = @ $_SESSION['ATS_USERNAME'];
+			$this->username = @ $_SESSION['SPINDASH_USERNAME'];
 		}
 	}
 	
@@ -97,8 +97,8 @@ final class Session extends CoreModule
 		if(is_callable($this->login_callback)) {
 			if(($this->logged_in = call_user_func($this->login_callback, $username, $password)) === true) {
 				$this->username = $username;
-				$_SESSION['ATS_LOGGED_IN'] = 'yes';
-				$_SESSION['ATS_USERNAME'] = $username;
+				$_SESSION['SPINDASH_LOGGED_IN'] = 'yes';
+				$_SESSION['SPINDASH_USERNAME'] = $username;
 				return true;
 			}
 			return false;
@@ -133,9 +133,9 @@ final class Session extends CoreModule
 	public function registerForm($fid) {
 		$forms = $this->gets('FORMS', array());
 		if(!is_array($forms)) {
-			$forms = array($fid => ATS_NOW);
+			$forms = array($fid => SPINDASH_NOW);
 		} else {
-			$forms[$fid] = ATS_NOW;
+			$forms[$fid] = SPINDASH_NOW;
 		}
 		$this->puts('FORMS', $forms);
 	}

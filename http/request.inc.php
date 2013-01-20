@@ -23,13 +23,13 @@ final class Request extends CoreModule
 	public function __construct(API $base) {
 		parent::__construct($base);
 		switch($base->frontend()) {
-			case API::ATS_FRONTEND_BASIC:
+			case API::FRONTEND_BASIC:
 				$this->get_variables = & $_GET;
 				$this->post_variables = & $_POST;
 				$this->cookie_variables = & $_COOKIE;
 				$this->method = strtolower($_SERVER['REQUEST_METHOD']);
 			break;
-			case API::ATS_FRONTEND_FASTCGI:
+			case API::FRONTEND_FASTCGI:
 				// TODO
 			break;
 		}

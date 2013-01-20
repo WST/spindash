@@ -13,10 +13,9 @@ namespace SpinDash;
 
 class API
 {
-	const ATS_FRONTEND_BASIC = 0;
-	const ATS_FRONTEND_FASTCGI = 1;
-	const ATS_FRONTEND_CLISERVER = 2;
-	const ATS_FRONTEND_ATS = 3;
+	const FRONTEND_BASIC = 0;
+	const FRONTEND_FASTCGI = 1;
+	const FRONTEND_CLISERVER = 2;
 
 	private $debug_mode;
 	private $frontend;
@@ -29,7 +28,7 @@ class API
 	/**
 	* Create an API instance
 	*/
-	public function __construct($debug = false, $frontend = self::ATS_FRONTEND_BASIC) {
+	public function __construct($debug = false, $frontend = self::FRONTEND_BASIC) {
 		$this->frontend = $frontend;
 		$this->routes['get'] = array();
 		$this->routes['post'] = array();
@@ -97,8 +96,8 @@ class API
 			throw new CoreException('You don’t seem to have <a href="http://www.twig-project.org/">Twig engine</a> installed');
 		}
 		
-		require_once ATS_TEXTPROC . 'layout-directory.inc.php';
-		require_once ATS_TEXTPROC . 'template.inc.php';
+		require_once SPINDASH_TEXTPROC . 'layout-directory.inc.php';
+		require_once SPINDASH_TEXTPROC . 'template.inc.php';
 		
 		return new LayoutDirectory($this, $path, $webpath);
 	}
@@ -115,27 +114,27 @@ class API
 		return $this->frontend;
 	}
 	
-	public function logMessage($message, $level = ATS_LOGLEVEL_INFORMATION) {
+	public function logMessage($message, $level = SPINDASH_LOGLEVEL_INFORMATION) {
 		// TODO
 	}
 	
 	public function openDatabase($hostname, $username, $password, $database, $use_unix_socket = false) {
 		// Initialize the database subsystem
-		require_once ATS_DB . 'database.inc.php';
-		require_once ATS_DB . 'model.inc.php';
-		require_once ATS_DB . 'model-manager.inc.php';
-		require_once ATS_DB . 'record-filter.inc.php';
-		require_once ATS_DB . 'statement.inc.php';
+		require_once SPINDASH_DB . 'database.inc.php';
+		require_once SPINDASH_DB . 'model.inc.php';
+		require_once SPINDASH_DB . 'model-manager.inc.php';
+		require_once SPINDASH_DB . 'record-filter.inc.php';
+		require_once SPINDASH_DB . 'statement.inc.php';
 		
 		return new Database($hostname, $username, $password, $database, $use_unix_socket);
 	}
 	
 	public function openSQLiteDatabase($filename) {
-		require_once ATS_DB . 'database.inc.php';
-		require_once ATS_DB . 'model.inc.php';
-		require_once ATS_DB . 'model-manager.inc.php';
-		require_once ATS_DB . 'record-filter.inc.php';
-		require_once ATS_DB . 'statement.inc.php';
+		require_once SPINDASH_DB . 'database.inc.php';
+		require_once SPINDASH_DB . 'model.inc.php';
+		require_once SPINDASH_DB . 'model-manager.inc.php';
+		require_once SPINDASH_DB . 'record-filter.inc.php';
+		require_once SPINDASH_DB . 'statement.inc.php';
 		
 		return new Database($filename);
 	}
@@ -145,7 +144,7 @@ class API
 	}
 	
 	public function parseBBCode($text) {
-		require_once ATS_TEXTPROC . 'bbcode.inc.php';
+		require_once SPINDASH_TEXTPROC . 'bbcode.inc.php';
 		
 		$bbcode = new BBCode($this);
 		return $bbcode->parse($text);
@@ -290,7 +289,7 @@ class API
 	
 	private function processBasicRequest() {
 		if(!is_object($response = $this->process($request = new Request($this)))) {
-			throw new CoreException("request handler has corrupted it’s ATS\Response instance");
+			throw new CoreException("request handler has corrupted it’s SpinDash\Response instance");
 		}
 		return $response->send();
 	}
@@ -301,8 +300,8 @@ class API
 	
 	public function execute() {
 		switch($this->frontend) {
-			case self::ATS_FRONTEND_BASIC: return $this->processBasicRequest(); break;
-			case self::ATS_FRONTEND_FASTCGI: return $this->fastCGI(); break;
+			case self::FRONTEND_BASIC: return $this->processBasicRequest(); break;
+			case self::FRONTEND_FASTCGI: return $this->fastCGI(); break;
 		}
 		throw new CoreException('unknown frontend selected');
 	}
@@ -312,12 +311,12 @@ class API
 	}
 	
 	public function useMCServer($hostname, $port, $key_prefix = '') {
-		require_once ATS_CACHE . 'mc-cache-engine.inc.php';
+		require_once SPINDASH_CACHE . 'mc-cache-engine.inc.php';
 		$this->useCacheEngine(new MCCacheEngine($this, $key_prefix, $hostname, $port));
 	}
 	
 	public function simplePage($title, $body, $description = '') {
-		$page = new TextFile(ATS_ROOT . 'misc' . DIRECTORY_SEPARATOR . 'simple_page.htt');
+		$page = new TextFile(SPINDASH_ROOT . 'misc' . DIRECTORY_SEPARATOR . 'simple_page.htt');
 		$page->replace(array('{TITLE}', '{BODY}', '{DESCRIPTION}'), array(ucfirst($title), ucfirst($body), ucfirst($description)));
 		return (string) $page;
 	}
