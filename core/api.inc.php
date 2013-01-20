@@ -315,6 +315,11 @@ class API
 		$this->useCacheEngine(new MCCacheEngine($this, $key_prefix, $hostname, $port));
 	}
 	
+	public function useRedisServer($hostname, $port, $key_prefix = '') {
+		require_once SPINDASH_CACHE . 'redis-cache-engine.inc.php';
+		$this->useCacheEngine(new RedisCacheEngine($this, $key_prefix, $hostname, $port));
+	}
+	
 	public function simplePage($title, $body, $description = '') {
 		$page = new TextFile(SPINDASH_ROOT . 'misc' . DIRECTORY_SEPARATOR . 'simple_page.htt');
 		$page->replace(array('{TITLE}', '{BODY}', '{DESCRIPTION}'), array(ucfirst($title), ucfirst($body), ucfirst($description)));

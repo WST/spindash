@@ -13,10 +13,10 @@ namespace SpinDash;
 
 abstract class Application implements IApplication
 {
-	protected $ats = NULL;
+	protected $sd = NULL;
 	
 	public function __construct($debug) {
-		$this->ats = new API($debug);
+		$this->sd = new API($debug);
 		$this->initializeCoreRoutes();
 	}
 	
@@ -24,12 +24,12 @@ abstract class Application implements IApplication
 		$methods = call_user_func(array(get_called_class(), 'routeMap'));
 		foreach($methods as $method => $routes) {
 			foreach($routes as $route => $handler) {
-				call_user_func(array($this->ats, $method), $route, $this, $handler);
+				call_user_func(array($this->sd, $method), $route, $this, $handler);
 			}
 		}
 	}
 	
 	public function execute() {
-		return $this->ats->execute();
+		return $this->sd->execute();
 	}
 }
