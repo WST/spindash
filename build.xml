@@ -51,6 +51,10 @@
 		<include name="**"/>
 	</fileset>
 	
+	<fileset dir="${spindash.home}/fileio" id="fileio">
+		<include name="**"/>
+	</fileset>
+	
 	<target name="main">
 		<phingcall target="build"/>
 		<phingcall target="pear-package"/>
@@ -103,6 +107,10 @@
 		
 		<copy todir="${build.src.dir}/xml">
 			<fileset refid="xml"/>
+		</copy>
+		
+		<copy todir="${build.src.dir}/fileio">
+			<fileset refid="fileio"/>
 		</copy>
 		
 		<copy file="spindash.inc.php" todir="${build.src.dir}"/>

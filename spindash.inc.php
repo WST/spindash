@@ -23,6 +23,7 @@ define('SPINDASH_HTTP', SPINDASH_ROOT . 'http' . DIRECTORY_SEPARATOR);
 define('SPINDASH_MISC', SPINDASH_ROOT . 'misc' . DIRECTORY_SEPARATOR);
 define('SPINDASH_TEXTPROC', SPINDASH_ROOT . 'textproc' . DIRECTORY_SEPARATOR);
 define('SPINDASH_XML', SPINDASH_ROOT . 'xml' . DIRECTORY_SEPARATOR);
+define('SPINDASH_FILEIO', SPINDASH_ROOT . 'fileio' . DIRECTORY_SEPARATOR);
 
 // Other core definitions and initialization
 define('SPINDASH_NOW', time());

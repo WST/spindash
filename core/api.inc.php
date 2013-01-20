@@ -320,6 +320,11 @@ class API
 		$this->useCacheEngine(new RedisCacheEngine($this, $key_prefix, $hostname, $port));
 	}
 	
+	public function openSegaInputFile($filename) {
+		require_once SPINDASH_FILEIO . 'sega-input-file.inc.php';
+		return new SegaInputFile($this, $filename);
+	}
+	
 	public function simplePage($title, $body, $description = '') {
 		$page = new TextFile(SPINDASH_ROOT . 'misc' . DIRECTORY_SEPARATOR . 'simple_page.htt');
 		$page->replace(array('{TITLE}', '{BODY}', '{DESCRIPTION}'), array(ucfirst($title), ucfirst($body), ucfirst($description)));
