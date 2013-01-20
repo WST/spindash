@@ -20,21 +20,35 @@ abstract class CacheEngine extends CoreModule implements ICacheEngine
 		$this->key_prefix = $key_prefix;
 	}
 	
-	public function handleRequest(Request $request, Response & $response) {
+	protected function createKey($host, $path) {
+		return "{$this->key_prefix}:{$host()}:{$path()}";
+	}
+	
+	public function handleRequest(Request $request, Response $response) {
 		if($request->method() != 'get') return false;
 		
-		$stored_response = $this->gets($key = "{$this->key_prefix}:{$request->host()}:{$request->path()}", NULL);
-		if(!is_null($stored_response)) {
-			$response = unserialize($stored_response);
+		$cached = $this->gets($key = $this->createKey($request->host(), $request->path()), NULL);
+		if(!is_null($cached)) {
+			$response->setBody($cached);
+			return true;
 		}
 		
 		return false;
 	}
 	
-	public function handleResponse(Request $request, Response & $response) {
+	public function handleResponse(Request $request, Response $response) {
 		if($request->method() != 'get') return false;
+		if($response->status() != 200) return false;
 		
-		$this->puts("{$this->key_prefix}:{$request->host()}:{$request->path()}", serialize($response));
+		$key = $this->createKey($request->host(), $request->path());
+		if($response->cachingForbidden()) {
+			if($this->ada($key)) {
+				// TODO: DELETE
+			}
+			return false;
+		}
+		
+		$this->puts($key, (string) $response);
 		return true;
 	}
 }

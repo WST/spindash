@@ -19,6 +19,6 @@ interface ICacheEngine
 	
 	public function gets($key, $default = NULL);
 	
-	public function handleRequest(Request $request, Response & $response);
-	public function handleResponse(Request $request, Response & $response);
+	public function handleRequest(Request $request, Response $response);
+	public function handleResponse(Request $request, Response $response);
 }

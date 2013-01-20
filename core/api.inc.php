@@ -248,7 +248,7 @@ class API
 	}
 	
 	private function process(Request $request) {
-		$response = new Response($this->frontend);
+		$response = new Response($this);
 		
 		if(!is_null($this->cache) && $this->cache->handleRequest($request, $response)) {
 			return $response;

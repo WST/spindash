@@ -11,22 +11,19 @@
 
 namespace SpinDash;
 
-final class Response
+final class Response extends CoreModule
 {
 	private $body = '';
 	private $headers = array();
+	private $vary_headers = array();
 	private $status = 200;
 	private $content_type = 'text/html;charset=utf-8';
 	
 	private $ready = false;
-	private $frontend = API::FRONTEND_BASIC;
+	private $do_not_cache = false;
 	
-	public function __construct($frontend) {
-		$this->frontend = $frontend;
-	}
-	
-	public function __sleep() {
-		return array('body', 'headers', 'status', 'content_type', 'ready', 'frontend');
+	public function __construct(API $base) {
+		parent::__construct($base);
 	}
 	
 	public function setBody($data) {
@@ -41,34 +38,67 @@ final class Response
 		$this->status = $code;
 	}
 	
+	public function statusCode() {
+		return $this->status;
+	}
+	
 	public function setContentType($mime_type) {
 		$this->content_type = $mime_type;
+	}
+	
+	public function doNotCache($do_not_cache = true) {
+		$this->do_not_cache = $do_not_cache;
+	}
+	
+	public function cachingForbidden() {
+		return $this->do_not_cache;
 	}
 	
 	private function statusDescription() {
 		switch($this->status) {
 			case 200: return 'Found'; break;
-			case 403: return 'Forbidden'; break;
-			case 404: return 'Not Found'; break;
 			case 206: return 'Partial Content'; break;
 			case 302: return 'Moved Permanently'; break;
+			case 403: return 'Forbidden'; break;
+			case 404: return 'Not Found'; break;
+			case 410: return 'Gone'; break;
+			case 502: return 'Bad Gateway'; break;
+			case 503: return 'Service Temporarily Unavailable'; break;
+			case 504: return 'Gateway Timeout'; break;
 		}
+		
 		throw new CoreException('unknown HTTP status code');
 	}
 	
 	public function redirect($location) {
 		$this->status = 302;
-		$this->headers['Location'] = $location;
+		$this->setHeader('Location', $location);
+	}
+	
+	public function setHeader($header_name, $value) {
+		$this->headers[$header_name] = $value;
+	}
+	
+	public function varyOn($header_name = NULL) {
+		if(!is_null($header_name)) {
+			$this->vary_headers[] = $header_name;
+		}
+		
+		return $this->vary_headers;
 	}
 	
 	public function send() {
-		switch($this->frontend) {
+		switch($this->base->frontend()) {
 			case API::FRONTEND_BASIC:
 				header("HTTP/1.1 {$this->status} {$this->statusDescription()}");
 				header("Content-Type: {$this->content_type}");
 				
-				foreach($this->headers as $k => $v) {
-					header("$k: $v");
+				foreach($this->headers as $header_name => $value) {
+					header("{$header_name}: {$value}");
+				}
+				
+				if(count($this->vary_headers)) {
+					header('Vary: ' . implode(', ', $this->vary_headers));
 				}
 				
 				echo $this->body;
@@ -79,6 +109,10 @@ final class Response
 		}
 	}
 	
+	public function __toString() {
+		return $this->body;
+	}
+	
 	public function setReady($ready) {
 		$this->ready = $ready;
 	}
@@ -87,4 +121,3 @@ final class Response
 		return $this->ready;
 	}
 }
-
