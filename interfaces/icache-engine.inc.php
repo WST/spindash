@@ -13,7 +13,7 @@ namespace SpinDash;
 
 interface ICacheEngine
 {
-	public function puts($key, $value);
+	public function puts($key, $value, $lifetime = 0);
 	
 	public function ada($key);
 	

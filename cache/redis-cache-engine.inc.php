@@ -29,8 +29,8 @@ final class RedisCacheEngine extends CacheEngine
 		}
 	}
 	
-	public function puts($key, $value) {
-		$this->redis->set($key, $value);
+	public function puts($key, $value, $lifetime = 0) {
+		return $lifetime ? $this->redis->setEx($key, $lifetime * 1000, $value) : $this->redis->set($key, $value);
 	}
 	
 	public function ada($key) {

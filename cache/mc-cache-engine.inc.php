@@ -24,8 +24,8 @@ final class MCCacheEngine extends CacheEngine
 		$this->memcached->addServer($hostname, $port);
 	}
 	
-	public function puts($key, $value) {
-		$this->memcached->set($key, $value);
+	public function puts($key, $value, $lifetime = 0) {
+		return $this->memcached->set($key, $value, $lifetime);
 	}
 	
 	public function ada($key) {
