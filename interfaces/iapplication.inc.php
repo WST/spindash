@@ -13,5 +13,5 @@ namespace SpinDash;
 
 interface IApplication
 {
-	public static function routeMap();
+	public function routeMap($request);
 }

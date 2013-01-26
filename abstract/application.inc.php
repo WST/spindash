@@ -17,11 +17,11 @@ abstract class Application implements IApplication
 	
 	public function __construct($debug) {
 		$this->sd = new API($debug);
-		$this->initializeCoreRoutes();
+		$this->sd->registerCommonRequestHandler($this, 'initializeCoreRoutes');
 	}
 	
-	protected function initializeCoreRoutes() {
-		$methods = call_user_func(array(get_called_class(), 'routeMap'));
+	public function initializeCoreRoutes(Request $request) {
+		$methods = call_user_func(array($this, 'routeMap'), $request);
 		foreach($methods as $method => $routes) {
 			foreach($routes as $route => $handler) {
 				call_user_func(array($this->sd, $method), $route, $this, $handler);
