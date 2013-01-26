@@ -11,29 +11,16 @@
 
 namespace SpinDash;
 
-final class Database
+abstract class Database extends CoreModule
 {
 	private $pdo = NULL;
 	private $queries = 0;
 	
-	public function __construct() {
+	
+	public function __construct(API $base) {
+		parent::__construct($base);
 		if(!class_exists('PDO')) {
 			throw new CoreException('PDO is not installed, but it is required');
-		}
-		try {
-			$args = func_get_args();
-			if(count($args) == 1) {
-				// $filename
-				$this->pdo = new \PDO("sqlite:{$args[0]}");
-				$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-			} else {
-				// $hostname, $username, $password, $database, $use_unix_socket = false
-				$this->pdo = new \PDO("mysql:dbname={$args[3]};" . (@ $args[4] ? "unix_socket={$args[0]}" : "host={$args[0]}"), $args[1], $args[2]/*, array(\PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'UTF8'")*/);
-				$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-				$this->pdo->exec("SET NAMES 'UTF8'");
-			}
-		} catch(\PDOException $e) {
-			throw new DatabaseException($e);
 		}
 	}
 	

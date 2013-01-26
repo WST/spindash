@@ -20,6 +20,7 @@ class API
 	private $debug_mode;
 	private $frontend;
 	private $cache = NULL;
+	private $default_database = NULL;
 	
 	private $routes = array();
 	private $common_request_handlers = array();
@@ -120,34 +121,47 @@ class API
 	
 	public function openDatabase($hostname, $username, $password, $database, $use_unix_socket = false) {
 		// Initialize the database subsystem
-		require_once SPINDASH_DB . 'database.inc.php';
+		require_once SPINDASH_DB . 'mysql.inc.php';
 		require_once SPINDASH_DB . 'model.inc.php';
 		require_once SPINDASH_DB . 'model-manager.inc.php';
 		require_once SPINDASH_DB . 'record-filter.inc.php';
 		require_once SPINDASH_DB . 'statement.inc.php';
 		
-		return new Database($hostname, $username, $password, $database, $use_unix_socket);
+		return new MySQL($hostname, $username, $password, $database, $use_unix_socket);
 	}
 	
 	public function openSQLiteDatabase($filename) {
-		require_once SPINDASH_DB . 'database.inc.php';
+		require_once SPINDASH_DB . 'sqlite.inc.php';
 		require_once SPINDASH_DB . 'model.inc.php';
 		require_once SPINDASH_DB . 'model-manager.inc.php';
 		require_once SPINDASH_DB . 'record-filter.inc.php';
 		require_once SPINDASH_DB . 'statement.inc.php';
 		
-		return new Database($filename);
+		return new SQLite($filename);
+	}
+	
+	public function useDatabase($hostname, $username, $password, $database, $use_unix_socket = false) {
+		if(is_null($this->default_database)) {
+			$this->default_database = $this->openDatabase($hostname, $username, $password, $database, $use_unix_socket);
+		} else {
+			throw new CoreException('Default database is already initialized');
+		}
+	}
+	
+	public function useSQLiteDatabase($filename) {
+		if(is_null($this->default_database)) {
+			$this->default_database = $this->openSQLiteDatabase($filename);
+		} else {
+			throw new CoreException('Default database is already initialized');
+		}
+	}
+	
+	public function database() {
+		return $this->default_database;
 	}
 	
 	private function makeLink($template, $page_number) {
 		return str_replace('{page}', $page_number, $template);
-	}
-	
-	public function parseBBCode($text) {
-		require_once SPINDASH_TEXTPROC . 'bbcode.inc.php';
-		
-		$bbcode = new BBCode($this);
-		return $bbcode->parse($text);
 	}
 	
 	public function createPager($element_count, $elements_per_page, $current_page, $link_template, $additional_class = 'pagination-centered', $previous_page = 'Previous_page', $next_page = 'Next page') {
@@ -196,6 +210,13 @@ class API
 	
 	public function cachePath() {
 		return sys_get_temp_dir();
+	}
+	
+	public function parseBBCode($text) {
+		require_once SPINDASH_TEXTPROC . 'bbcode.inc.php';
+		
+		$bbcode = new BBCode($this);
+		return $bbcode->parse($text);
 	}
 	
 	public function registerCommonRequestHandler() {
@@ -295,7 +316,7 @@ class API
 	}
 	
 	private function fastCGI() {
-		// TODO: цикл обработки запросов FastCGI
+		// TODO: FastCGI event loop
 	}
 	
 	public function execute() {
@@ -310,14 +331,21 @@ class API
 		$this->cache = $engine;
 	}
 	
-	public function useMCServer($hostname, $port, $key_prefix = '') {
+	public function useMCCache($hostname, $port, $key_prefix = '') {
 		require_once SPINDASH_CACHE . 'mc-cache-engine.inc.php';
 		$this->useCacheEngine(new MCCacheEngine($this, $key_prefix, $hostname, $port));
 	}
 	
-	public function useRedisServer($hostname, $port, $key_prefix = '') {
+	public function useRedisCache($hostname, $port, $key_prefix = '') {
 		require_once SPINDASH_CACHE . 'redis-cache-engine.inc.php';
 		$this->useCacheEngine(new RedisCacheEngine($this, $key_prefix, $hostname, $port));
+	}
+	
+	public function useDatabaseCache($key_prefix) {
+		if(is_null($this->default_database)) {
+			throw new CoreException('You should be „using” the default database in order to start database caching');
+		}
+		$this->useCacheEngine(new DatabaseCacheEngine($this, $this->default_database, $key_prefix));
 	}
 	
 	public function openSegaInputFile($filename) {

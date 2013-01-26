@@ -20,8 +20,13 @@ abstract class CacheEngine extends CoreModule implements ICacheEngine
 		$this->key_prefix = $key_prefix;
 	}
 	
-	protected function createKey($host, $path) {
-		return "{$this->key_prefix}:{$host()}:{$path()}";
+	protected function createKey($request, $response) {
+		$key_prefix = @ $this->key_prefix ? "{$this->key_prefix}:" : '';
+		$key = "{$key_prefix}{$request->host()}:{$request->path()}";
+		foreach($response->varyOn() as $header) {
+			$key .= ':' . md5($request->headerValue($header));
+		}
+		return $key;
 	}
 	
 	public function handleRequest(Request $request, Response $response) {
@@ -40,7 +45,7 @@ abstract class CacheEngine extends CoreModule implements ICacheEngine
 		if($request->method() != 'get') return false;
 		if($response->status() != 200) return false;
 		
-		$key = $this->createKey($request->host(), $request->path());
+		$key = $this->createKey($request, $response);
 		if($response->cachingForbidden()) {
 			if($this->ada($key)) {
 				// TODO: DELETE
