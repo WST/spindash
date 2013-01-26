@@ -32,7 +32,7 @@ abstract class CacheEngine extends CoreModule implements ICacheEngine
 	public function handleRequest(Request $request, Response $response) {
 		if($request->method() != 'get') return false;
 		
-		$cached = $this->gets($key = $this->createKey($request->host(), $request->path()), NULL);
+		$cached = $this->gets($key = $this->createKey($request, $response), NULL);
 		if(!is_null($cached)) {
 			$response->setBody($cached);
 			return true;
@@ -43,7 +43,7 @@ abstract class CacheEngine extends CoreModule implements ICacheEngine
 	
 	public function handleResponse(Request $request, Response $response) {
 		if($request->method() != 'get') return false;
-		if($response->status() != 200) return false;
+		if($response->statusCode() != 200) return false;
 		
 		$key = $this->createKey($request, $response);
 		if($response->cachingForbidden()) {

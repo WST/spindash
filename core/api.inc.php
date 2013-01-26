@@ -341,10 +341,12 @@ class API
 		$this->useCacheEngine(new RedisCacheEngine($this, $key_prefix, $hostname, $port));
 	}
 	
-	public function useDatabaseCache($key_prefix) {
+	public function useDatabaseCache($key_prefix = '') {
 		if(is_null($this->default_database)) {
 			throw new CoreException('You should be „using” the default database in order to start database caching');
 		}
+		
+		require_once SPINDASH_CACHE . 'database-cache-engine.inc.php';
 		$this->useCacheEngine(new DatabaseCacheEngine($this, $this->default_database, $key_prefix));
 	}
 	
