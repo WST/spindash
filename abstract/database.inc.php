@@ -13,8 +13,8 @@ namespace SpinDash;
 
 abstract class Database extends CoreModule
 {
-	private $pdo = NULL;
-	private $queries = 0;
+	protected $pdo = NULL;
+	protected $queries = 0;
 	
 	
 	public function __construct(API $base) {

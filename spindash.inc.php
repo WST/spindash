@@ -37,6 +37,7 @@ require SPINDASH_INTERFACES . 'iapplication.inc.php';
 // Abstract core classes
 require SPINDASH_ABSTRACT . 'module.inc.php';
 require SPINDASH_ABSTRACT . 'core-module.inc.php';
+require SPINDASH_ABSTRACT . 'database.inc.php';
 require SPINDASH_ABSTRACT . 'application.inc.php';
 require SPINDASH_ABSTRACT . 'cache-engine.inc.php';
 

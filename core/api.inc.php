@@ -127,7 +127,7 @@ class API
 		require_once SPINDASH_DB . 'record-filter.inc.php';
 		require_once SPINDASH_DB . 'statement.inc.php';
 		
-		return new MySQL($hostname, $username, $password, $database, $use_unix_socket);
+		return new MySQL($this, $hostname, $username, $password, $database, $use_unix_socket);
 	}
 	
 	public function openSQLiteDatabase($filename) {
@@ -137,7 +137,7 @@ class API
 		require_once SPINDASH_DB . 'record-filter.inc.php';
 		require_once SPINDASH_DB . 'statement.inc.php';
 		
-		return new SQLite($filename);
+		return new SQLite($this, $filename);
 	}
 	
 	public function useDatabase($hostname, $username, $password, $database, $use_unix_socket = false) {
