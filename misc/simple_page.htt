@@ -23,6 +23,6 @@ h1 {color: #333; font-weight: normal; border-bottom: 1px solid #333; margin: 0px
 	<h1>{TITLE}</h1>
 	<div id="body">{BODY}</div>
 	<div id="description">{DESCRIPTION}</div>
-	<div id="software"><a href="http://averkov.maykop.ru/">ATS</a> 5.0-dev — © 2011 Ilja I. Averkov</div>
+	<div id="software">This website uses <a href="http://averkov.web.id/projects/spindash/" title="Web application framework">Spin&nbsp;Dash&nbsp;{VERSION}</a> by <a href="http://averkov.web.id">Ilya I. Averkov</a></div>
 </body>
 </html>

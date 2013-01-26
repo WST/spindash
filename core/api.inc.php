@@ -355,7 +355,7 @@ class API
 	
 	public function simplePage($title, $body, $description = '') {
 		$page = new TextFile(SPINDASH_ROOT . 'misc' . DIRECTORY_SEPARATOR . 'simple_page.htt');
-		$page->replace(array('{TITLE}', '{BODY}', '{DESCRIPTION}'), array(ucfirst($title), ucfirst($body), ucfirst($description)));
+		$page->replace(array('{TITLE}', '{BODY}', '{DESCRIPTION}', '{VERSION}'), array(ucfirst($title), ucfirst($body), ucfirst($description), SPINDASH_VERSION));
 		return (string) $page;
 	}
 	
