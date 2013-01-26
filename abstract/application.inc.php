@@ -25,7 +25,7 @@ abstract class Application extends API implements IApplication
 		$this->sd = $this->ats = $this;
 	}
 	
-	public function initializeCoreRoutes(Request $request) {
+	protected function initializeCoreRoutes(Request $request) {
 		$methods = call_user_func(array($this, 'routeMap'), $request);
 		foreach($methods as $method => $routes) {
 			foreach($routes as $route => $handler) {
