@@ -22,9 +22,9 @@ abstract class CacheEngine extends CoreModule implements ICacheEngine
 	
 	protected function createKey($request, $response) {
 		$key_prefix = @ $this->key_prefix ? "{$this->key_prefix}:" : '';
-		$key = "{$key_prefix}{$request->host()}:{$request->path()}";
+		$key = "{$key_prefix}{$request->host()}{$request->path()}";
 		foreach($response->varyOn() as $header) {
-			$key .= ':' . md5($request->headerValue($header));
+			$key .= ':' . md5($request->headerValue($header, ''));
 		}
 		return $key;
 	}

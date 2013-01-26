@@ -107,8 +107,15 @@ final class Request extends CoreModule
 		// TODO: FastCGI
 	}
 	
+	public function headerValue($header_name, $default_value = NULL) {
+		$header_name = strtoupper(str_replace('-', '_', $header_name));
+		if(array_key_exists($key = "HTTP_$header_name", $_SERVER)) {
+			return $_SERVER[$key];
+		}
+		return $default_value;
+	}
+	
 	public function method() {
 		return $this->method;
 	}
 }
-

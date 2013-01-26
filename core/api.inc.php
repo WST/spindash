@@ -17,7 +17,6 @@ class API
 	const FRONTEND_FASTCGI = 1;
 	const FRONTEND_CLISERVER = 2;
 
-	private $debug_mode;
 	private $frontend;
 	private $cache = NULL;
 	private $default_database = NULL;
@@ -29,18 +28,10 @@ class API
 	/**
 	* Create an API instance
 	*/
-	public function __construct($debug = false, $frontend = self::FRONTEND_BASIC) {
+	public function __construct($frontend = self::FRONTEND_BASIC) {
 		$this->frontend = $frontend;
 		$this->routes['get'] = array();
 		$this->routes['post'] = array();
-		
-		if($this->debug_mode = $debug) {
-			@ ini_set('display_errors', 'On');
-			@ error_reporting(E_ALL);
-		} else {
-			@ ini_set('display_errors', 'Off');
-			@ error_reporting(0);
-		}
 		
 		@ set_exception_handler(array($this, 'handleException'));
 	}
@@ -52,7 +43,7 @@ class API
 	/**
 	* Checks whether the provided file is includeable
 	*/
-	private static function isIncludeable($path) {
+	public static function isIncludeable($path) {
 		if(file_exists($path) && is_readable($path)) {
 			return true;
 		}
@@ -381,9 +372,5 @@ class API
 	
 	public function handleException(\Exception $e) {
 		die($this->simplePage('General error', $e->getMessage(), 'This could happen because of an error in the web application’s code, settings or database. If you are the owner of this website, contact your web programming staff.'));
-	}
-	
-	public function debug() {
-		return $this->debug_mode;
 	}
 }
