@@ -36,10 +36,8 @@ require SPINDASH_INTERFACES . 'icache-engine.inc.php';
 require SPINDASH_INTERFACES . 'iapplication.inc.php';
 
 // Abstract core classes
-require SPINDASH_ABSTRACT . 'module.inc.php';
 require SPINDASH_ABSTRACT . 'core-module.inc.php';
 require SPINDASH_ABSTRACT . 'database.inc.php';
-require SPINDASH_ABSTRACT . 'application.inc.php';
 require SPINDASH_ABSTRACT . 'cache-engine.inc.php';
 
 // Core modules
@@ -55,6 +53,10 @@ require SPINDASH_HTTP . 'response.inc.php';
 
 // Core API
 require SPINDASH_CORE . 'api.inc.php';
+
+// API frontends
+require SPINDASH_ABSTRACT . 'application.inc.php';
+require SPINDASH_ABSTRACT . 'module.inc.php';
 
 // Left for compatibility reasons
 class ATS extends API {}

@@ -11,25 +11,26 @@
 
 namespace SpinDash;
 
-abstract class Application implements IApplication
+abstract class Application extends API implements IApplication
 {
+	// Left for compatibility
 	protected $sd = NULL;
+	protected $ats = NULL;
 	
 	public function __construct($debug) {
-		$this->sd = new API($debug);
-		$this->sd->registerCommonRequestHandler($this, 'initializeCoreRoutes');
+		parent::__construct($debug);
+		parent::registerCommonRequestHandler($this, 'initializeCoreRoutes');
+		
+		// Left for compatibility
+		$this->sd = $this->ats = $this;
 	}
 	
 	public function initializeCoreRoutes(Request $request) {
 		$methods = call_user_func(array($this, 'routeMap'), $request);
 		foreach($methods as $method => $routes) {
 			foreach($routes as $route => $handler) {
-				call_user_func(array($this->sd, $method), $route, $this, $handler);
+				call_user_func(array($this, $method), $route, $this, $handler);
 			}
 		}
-	}
-	
-	public function execute() {
-		return $this->sd->execute();
 	}
 }
