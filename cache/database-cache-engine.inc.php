@@ -38,8 +38,8 @@ final class DatabaseCacheEngine extends CacheEngine
 	public function puts($key, $value, $lifetime = 0) {
 		$key = $this->database->escape($key);
 		$value = $this->database->escape($value);
-		if($this->ada($key)) {
-			$this->database->exec("UPDATE spindash_cache SET item_value = $value AND item_expires = " . (SPINDASH_NOW + $lifetime) . " WHERE item_key = $key");
+		if($this->database->countRows('spindash_cache', "item_key = $key")) {
+			$this->database->exec("UPDATE spindash_cache SET item_value = $value, item_expires = " . (SPINDASH_NOW + $lifetime) . " WHERE item_key = $key");
 		} else {
 			$this->database->exec("INSERT INTO spindash_cache VALUES ($key, " . (SPINDASH_NOW + $lifetime) . ", $value)");
 		}
