@@ -17,7 +17,7 @@ abstract class Application extends API implements IApplication
 	protected $sd = NULL;
 	protected $ats = NULL;
 	
-	private $settings = array();
+	private $settings = [];
 	
 	public function __construct($configuration_file_name) {
 		parent::__construct(PHP_SAPI == 'cli' ? API::FRONTEND_FASTCGI : API::FRONTEND_BASIC);
@@ -74,10 +74,10 @@ abstract class Application extends API implements IApplication
 	}
 	
 	protected function initializeDynamicRouteTable(Request $request) {
-		$methods = call_user_func(array($this, 'routeMap'), $request);
+		$methods = call_user_func([$this, 'routeMap'], $request);
 		foreach($methods as $method => $routes) {
 			foreach($routes as $route => $handler) {
-				call_user_func(array($this, $method), $route, $this, $handler);
+				call_user_func([$this, $method], $route, $this, $handler);
 			}
 		}
 	}

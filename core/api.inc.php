@@ -23,19 +23,19 @@ class API
 	private $default_database = NULL;
 	private $default_layout = NULL;
 	
-	private $routes = array();
-	private $common_request_handlers = array();
-	private $models = array();
+	private $routes = [];
+	private $common_request_handlers = [];
+	private $models = [];
 	
 	/**
 	* Create an API instance
 	*/
 	public function __construct($frontend = self::FRONTEND_BASIC) {
 		$this->frontend = $frontend;
-		$this->routes['get'] = array();
-		$this->routes['post'] = array();
+		$this->routes['get'] = [];
+		$this->routes['post'] = [];
 		
-		@ set_exception_handler(array($this, 'handleException'));
+		@ set_exception_handler([$this, 'handleException']);
 	}
 	
 	public function __destruct() {
@@ -192,7 +192,7 @@ class API
 	
 	public function createPager($element_count, $elements_per_page, $current_page, $link_template, $additional_class = 'pagination-centered', $previous_page = 'Previous_page', $next_page = 'Next page') {
 		
-		$pages = array();
+		$pages = [];
 		
 		$pages_to = ($element_count % $elements_per_page) ? floor($element_count / $elements_per_page) + 1 : ($element_count / $elements_per_page);
 		
@@ -247,19 +247,19 @@ class API
 	
 	public function registerCommonRequestHandler() {
 		$args = func_get_args();
-		$this->common_request_handlers[] = (count($args) == 1) ? $args[0] : array($args[0], $args[1]);
+		$this->common_request_handlers[] = (count($args) == 1) ? $args[0] : [$args[0], $args[1]];
 	}
 	
 	public function get() {
 		$args = func_get_args();
 		$this->routes['get'][$args[0]] =
-			(count($args) == 2) ? $args[1] : ((count($args) == 3) ? array($args[1], $args[2]) : array($args[1], $args[2], $args[3]));
+			(count($args) == 2) ? $args[1] : ((count($args) == 3) ? [$args[1], $args[2]] : [$args[1], $args[2], $args[3]]);
 	}
 	
 	public function post() {
 		$args = func_get_args();
 		$this->routes['post'][$args[0]] =
-			(count($args) == 2) ? $args[1] : ((count($args) == 3) ? array($args[1], $args[2]) : array($args[1], $args[2], $args[3]));
+			(count($args) == 2) ? $args[1] : ((count($args) == 3) ? [$args[1], $args[2]] : [$args[1], $args[2], $args[3]]);
 	}
 	
 	public function gp() {
@@ -285,10 +285,10 @@ class API
 		}
 		
 		foreach($this->routes[$type] as $k => $v) {
-			$pattern = preg_replace(array('#(:[a-z_]+?)#iU', '#(%[a-z_]+?)#iU'), array('([^/]+)', '([\\d]+)'), $k);
-			$matches = array();
+			$pattern = preg_replace(['#(:[a-z_]+?)#iU', '#(%[a-z_]+?)#iU'], ['([^/]+)', '([\\d]+)'], $k);
+			$matches = [];
 			if(preg_match("#^$pattern$#", $request->requestPath(), $matches)) {
-				return count($matches) > 1 ? array($v, $matches) : array($v);
+				return count($matches) > 1 ? [$v, $matches] : [$v];
 			}
 		}
 		throw new CoreException("no route matching {$request->requestPath()}");
@@ -317,7 +317,7 @@ class API
 		}
 		
 		if(count($handler[0]) == 3) {
-			$handler[0] = array(new $handler[0][0]($handler[0][2]), $handler[0][1]);
+			$handler[0] = [new $handler[0][0]($handler[0][2]), $handler[0][1]];
 		}
 		
 		if(!is_callable($handler[0])) {
@@ -412,7 +412,7 @@ class API
 	
 	public function simplePage($title, $body, $description = '') {
 		$page = new TextFile(SPINDASH_ROOT . 'misc' . DIRECTORY_SEPARATOR . 'simple_page.htt');
-		$page->replace(array('{TITLE}', '{BODY}', '{DESCRIPTION}', '{VERSION}'), array(ucfirst($title), ucfirst($body), ucfirst($description), SPINDASH_VERSION));
+		$page->replace(['{TITLE}', '{BODY}', '{DESCRIPTION}', '{VERSION}'], [ucfirst($title), ucfirst($body), ucfirst($description), SPINDASH_VERSION]);
 		return (string) $page;
 	}
 	

@@ -105,19 +105,19 @@ final class Request extends CoreModule
 	}
 	
 	public function gpc($variable = NULL) {
-		if(is_null($variable)) return array('GET' => $this->get_variables, 'POST' => $this->post_variables, 'COOKIE' => $this->cookie_variables);
+		if(is_null($variable)) return ['GET' => $this->get_variables, 'POST' => $this->post_variables, 'COOKIE' => $this->cookie_variables];
 		return is_null($result = $this->get($variable)) ? (is_null($result = $this->post($variable)) ? (is_null($result = $this->cookie($variable)) ? NULL : $result) : $result) : $result;
 	}
 	
 	public function __toString() {
-		return serialize($this->gpc() + array('METHOD' => $this->method()));
+		return serialize($this->gpc() + ['METHOD' => $this->method()]);
 	}
 	
 	public function restore($from) {
 		$gpc = @ unserialize($from);
-		$this->get_variables = isset($gpc['GET']) ? $gpc['GET'] : array();
-		$this->post_variables = isset($gpc['POST']) ? $gpc['POST'] : array();
-		$this->cookie_variables = isset($gpc['COOKIE']) ? $gpc['COOKIE'] : array();
+		$this->get_variables = isset($gpc['GET']) ? $gpc['GET'] : [];
+		$this->post_variables = isset($gpc['POST']) ? $gpc['POST'] : [];
+		$this->cookie_variables = isset($gpc['COOKIE']) ? $gpc['COOKIE'] : [];
 		$this->method = isset($gpc['METHOD']) ? $gpc['METHOD'] : 'get';
 	}
 	

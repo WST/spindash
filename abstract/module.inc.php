@@ -14,10 +14,10 @@ namespace SpinDash;
 abstract class Module implements IATSModule
 {
 	public static function configure(Application $application) {
-		$methods = call_user_func(array(get_called_class(), 'routeMap'));
+		$methods = call_user_func([get_called_class(), 'routeMap']);
 		foreach($methods as $method => $routes) {
 			foreach($routes as $route => $handler) {
-				call_user_func(array($application, $method), $route, get_called_class(), $handler, $application);
+				call_user_func([$application, $method], $route, get_called_class(), $handler, $application);
 			}
 		}
 	}

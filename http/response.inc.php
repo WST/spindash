@@ -14,8 +14,8 @@ namespace SpinDash;
 final class Response extends CoreModule
 {
 	private $body = '';
-	private $headers = array();
-	private $vary_headers = array();
+	private $headers = [];
+	private $vary_headers = [];
 	private $status = 200;
 	private $content_type = 'text/html;charset=utf-8';
 	

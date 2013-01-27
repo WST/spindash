@@ -15,9 +15,9 @@ final class LayoutDirectory extends Directory
 {
 	private $webpath = '';
 	private $default_extension = '';
-	private $global_tags = array();
-	private $templates = array();
-	private $singleton_templates = array();
+	private $global_tags = [];
+	private $templates = [];
+	private $singleton_templates = [];
 	private $loader = NULL;
 	private $twig = NULL;
 	
@@ -27,11 +27,11 @@ final class LayoutDirectory extends Directory
 		require_once 'Twig/Autoloader.php';
 		
 		$this->webpath = $webpath;
-		$settings = $this->base->debug() ? array() : array('cache' => $this->base->cachePath());
+		$settings = $this->base->debug() ? [] : ['cache' => $this->base->cachePath()];
 		try {
 			\Twig_Autoloader::register();
 			$this->loader = new \Twig_Loader_Filesystem($path);
-			$this->twig = new \Twig_Environment($this->loader, array());
+			$this->twig = new \Twig_Environment($this->loader, []);
 		} catch(\Twig_Error_Loader $e) {
 			throw new TemplateException($e);
 		}

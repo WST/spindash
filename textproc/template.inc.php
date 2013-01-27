@@ -14,7 +14,7 @@ namespace SpinDash;
 class Template extends CoreModule
 {
 	private $template = NULL;
-	private $tags = array();
+	private $tags = [];
 	private $twig = NULL;
 	
 	public function __construct(API $base, LayoutDirectory $directory, $filename) {
@@ -28,7 +28,7 @@ class Template extends CoreModule
 	}
 
 	public function reset() {
-		$this->tags = array();
+		$this->tags = [];
 	}
 	
 	public function addTag($name, $value) {
@@ -52,4 +52,3 @@ class Template extends CoreModule
 		return $this->template->render($this->tags);
 	}
 }
-

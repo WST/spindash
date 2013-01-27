@@ -37,7 +37,7 @@ class Directory extends CoreModule
 			throw new FileIOException("{$this->path} is not readable!");
 		}
 		
-		$retval = array();
+		$retval = [];
 		for($d = @ opendir($this->path); $d_res = @ readdir($d); true) {
 			if($d_res == '.' || $d_res == '..') continue;
 			if($d_res[0] == '.') continue; // Конченое Subversion!
@@ -48,7 +48,7 @@ class Directory extends CoreModule
 	}
 	
 	public function listFiles() {
-		$retval = array();
+		$retval = [];
 		foreach($this->listEntries() as $k=>$v) {
 			if(!is_dir($this->path . DIRECTORY_SEPARATOR . $v)) {
 				$retval[] = $v;
@@ -60,7 +60,7 @@ class Directory extends CoreModule
 	
 	public function listFilesByTypes() {
 		$types = func_get_args();
-		$retval = array();
+		$retval = [];
 		foreach($types as $k=>$v) {
 			if(!preg_match('#^[a-z]+$#iU', $v)) {
 				throw new FileIOException("Wrong filename extension: $v");
@@ -77,7 +77,7 @@ class Directory extends CoreModule
 	}
 	
 	public function listDirectories() {
-		$retval = array();
+		$retval = [];
 		foreach($this->listEntries() as $k => $v) {
 			if(is_dir($this->path . DIRECTORY_SEPARATOR . $v)) {
 				$retval[] = $v;
@@ -87,7 +87,7 @@ class Directory extends CoreModule
 	}
 	
 	public function listDirectoriesByPattern($pattern) {
-		$retval = array();
+		$retval = [];
 		foreach($this->listDirectories() as $k => $v) {
 			if(preg_match($pattern, $v)) {
 				$retval[] = $v;
