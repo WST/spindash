@@ -338,18 +338,29 @@ class API
 		if(!is_object($response = $this->process($request = new Request($this)))) {
 			throw new CoreException("request handler has corrupted it’s SpinDash\Response instance");
 		}
-		return $response->send();
+		return $response->sendBasic();
 	}
 	
 	private function handleFastCGIClient($client) {
-		$raw_request = socket_read($client, 65536);
-		$raw_headers = substr($raw_request, 0, $delimiter_position = strpos($raw_request, "\r\n\r\n"));
-		$headers = explode("\r\n", $raw_headers);
+		socket_set_nonblock($client);
 		
-		$test_response = new Response($this);
-		$test_response->setBody('<h1>Hello, world ;)</h1>');
+		$raw_request = '';
+		while(true) {
+			$recv = socket_read($client, 1024, PHP_BINARY_READ);
+			if($recv == '') break;
+			$raw_request .= $recv;
+		}
 		
-		$test_response->sendFastCGI($client);
+		// Creating Request instance
+		$request = new Request($this);
+		$request->parseFastCGIRequest($raw_request);
+		
+		// Time to make an attempt to process our true FastCGI request
+		if(is_object($response = $this->process($request))) {
+			$response->sendFastCGI($client);
+		} else {
+			// Log error
+		}
 	}
 	
 	private function fastCGI() {

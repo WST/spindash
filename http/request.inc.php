@@ -17,6 +17,9 @@ final class Request extends CoreModule
 	private $post_variables;
 	private $cookie_variables;
 	private $method;
+	private $path;
+	private $host;
+	private $fastcgi_headers;
 	
 	private $session = NULL;
 	
@@ -28,10 +31,45 @@ final class Request extends CoreModule
 				$this->post_variables = & $_POST;
 				$this->cookie_variables = & $_COOKIE;
 				$this->method = strtolower($_SERVER['REQUEST_METHOD']);
+				$this->path = $_SERVER['REQUEST_URI'];
+				$this->host = $_SERVER['HTTP_HOST'];
 			break;
 			case API::FRONTEND_FASTCGI:
-				// TODO
+				// nothing
 			break;
+		}
+	}
+	
+	private function handleFastCGICookie($raw_data) {
+		
+	}
+	
+	public function parseFastCGIRequest($raw_data) {
+		$raw_headers = substr($raw_data, 0, $delimiter_position = strpos($raw_data, "\r\n\r\n"));
+		$raw_body = substr($raw_data, $delimiter_position + 4);
+		
+		$headers = explode("\r\n", $raw_headers);
+		
+		$parts = [];
+		preg_match('#^(GET|POST|PUT|HEAD) (.*) HTTP/1\.[01]$#', array_shift($headers), $parts);
+		$this->method = strtolower($parts[1]);
+		$this->path = $parts[2];
+		
+		foreach($headers as $raw_header) {
+			$parts = [];
+			preg_match('#([a-zA-Z\-]+): (.*)#', $raw_header, $parts);
+			
+			switch($parts[1]) {
+				default:
+					$this->fastcgi_headers[$parts[1]] = $parts[2];
+				break;
+				case 'Cookie':
+					$this->handleFastCGICookie($parts[2]);
+				break;
+				case 'Host':
+					$this->host = $parts[2];
+				break;
+			}
 		}
 	}
 	
@@ -47,12 +85,11 @@ final class Request extends CoreModule
 	}
 	
 	public function requestPath() {
-		return $_SERVER['REQUEST_URI'];
-		// TODO: FastCGI
+		return $this->path;
 	}
 	
 	public function path() {
-		return $_SERVER['REQUEST_URI'];
+		return $this->path;
 	}
 	
 	public function get($variable = NULL) {
@@ -98,8 +135,7 @@ final class Request extends CoreModule
 	}
 	
 	public function host() {
-		return $_SERVER['HTTP_HOST'];
-		// TODO: FastCGI
+		return $this->host;
 	}
 	
 	public function ip($resolve_proxy = true) {
