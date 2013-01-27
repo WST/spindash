@@ -18,10 +18,10 @@ class Directory extends CoreModule
 	public function __construct(API $base, $path) {
 		parent::__construct($base);
 		if(! @ file_exists($path)) {
-			throw new FileIOException($path, FILE_IO_DIRECTORY_NOT_FOUND);
+			throw new FileIOException($path, FileIOException::FILE_IO_DIRECTORY_NOT_FOUND);
 		}
 		if(! @ is_dir($path)) {
-			throw new FileIOException($path, FILE_IO_NOT_A_DIRECTORY);
+			throw new FileIOException($path, FileIOException::FILE_IO_NOT_A_DIRECTORY);
 		}
 		$this->path = $path;
 	}

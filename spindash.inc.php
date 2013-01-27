@@ -27,7 +27,7 @@ define('SPINDASH_FILEIO', SPINDASH_ROOT . 'fileio' . DIRECTORY_SEPARATOR);
 
 // Other core definitions and initialization
 define('SPINDASH_NOW', time());
-define('SPINDASH_VERSION', '5.1-git');
+define('SPINDASH_VERSION', '1.5.1-git');
 mb_internal_encoding('UTF-8');
 
 // Interfaces

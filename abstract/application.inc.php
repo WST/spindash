@@ -38,16 +38,36 @@ abstract class Application extends API implements IApplication
 		$settings = & $this->settings;
 		require_once $configuration_file_name;
 		
-		foreach($settings as $setting => $value) {
-			switch($setting) {
-				case 'paths':
-					
+		if(isset($settings['paths']['layout']['directory'])) {
+			parent::useLayoutDirectory($settings['paths']['layout']['directory'], @ $settings['paths']['layout']['webpath']);
+		}
+		
+		if(isset($settings['database'])) {
+			switch($settings['database']['engine']) {
+				default: throw new CoreException("Unknown database engine in config.inc.php <{$settings['database']['engine']}>"); break;
+				case 'MySQL':
+					parent::useMySQL($settings['database']['hostname'], $settings['database']['username'], $settings['database']['password'], $settings['database']['name']);
 				break;
-				case 'core':
-					
+				case 'PostgreSQL':
+					parent::usePostgreSQL($settings['database']['hostname'], $settings['database']['username'], $settings['database']['password'], $settings['database']['name']);
 				break;
-				case 'database':
-					
+				case 'SQLite':
+					parent::useSQLite($settings['database']['filename']);
+				break;
+			}
+		}
+		
+		if(isset($settings['cache'])) {
+			switch(@ $settings['cache']['engine']) {
+				default: throw new CoreException("Unknown caching engine in config.inc.php <{$settings['database']['engine']}>"); break;
+				case 'Database':
+					parent::useDatabaseCache($settings['cache']['key_prefix']);
+				break;
+				case 'Memcached':
+					parent::useMCCache($settings['cache']['hostname'], $settings['cache']['port'], $settings['cache']['key_prefix']);
+				break;
+				case 'Redis':
+					parent::useRedisCache($settings['cache']['hostname'], $settings['cache']['port'], $settings['cache']['key_prefix']);
 				break;
 			}
 		}

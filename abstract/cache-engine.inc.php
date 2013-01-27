@@ -47,9 +47,6 @@ abstract class CacheEngine extends CoreModule implements ICacheEngine
 		
 		$key = $this->createKey($request, $response);
 		if($response->cachingForbidden()) {
-			if($this->ada($key)) {
-				// TODO: DELETE
-			}
 			return false;
 		}
 		

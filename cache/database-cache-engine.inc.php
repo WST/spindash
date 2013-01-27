@@ -28,12 +28,21 @@ final class DatabaseCacheEngine extends CacheEngine
 			$sql = 'CREATE TABLE IF NOT EXISTS spindash_cache (item_key TEXT, item_expires INTEGER, item_value TEXT, UNIQUE (item_key))';
 			$database->exec($sql);
 		}
+		
+		if($database instanceof PostgreSQL) {
+			$sql = 'CREATE TABLE IF NOT EXISTS spindash_cache (item_key VARCHAR(255) NOT NULL, item_expires INTEGER NOT NULL, item_value TEXT NOT NULL, UNIQUE (item_key))';
+			$database->exec($sql);
+		}
 	}
 	
 	public function puts($key, $value, $lifetime = 0) {
 		$key = $this->database->escape($key);
 		$value = $this->database->escape($value);
-		$this->database->exec("REPLACE INTO spindash_cache VALUES ($key, " . (SPINDASH_NOW + $lifetime) . ", $value)");
+		if($this->ada($key)) {
+			$this->database->exec("UPDATE spindash_cache SET item_value = $value AND item_expires = " . (SPINDASH_NOW + $lifetime) . " WHERE item_key = $key");
+		} else {
+			$this->database->exec("INSERT INTO spindash_cache VALUES ($key, " . (SPINDASH_NOW + $lifetime) . ", $value)");
+		}
 	}
 	
 	public function ada($key) {

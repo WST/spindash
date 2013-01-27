@@ -18,8 +18,10 @@ class API
 	const FRONTEND_CLISERVER = 2;
 
 	private $frontend;
+	private $debug = false;
 	private $cache = NULL;
 	private $default_database = NULL;
+	private $default_layout = NULL;
 	
 	private $routes = array();
 	private $common_request_handlers = array();
@@ -97,6 +99,14 @@ class API
 		return new LayoutDirectory($this, $path, $webpath);
 	}
 	
+	public function useLayoutDirectory($path, $webpath) {
+		if(is_null($this->default_layout)) {
+			$this->default_layout = $this->openLayoutDirectory($path, $webpath);
+		} else {
+			throw new CoreException('Default layout directory is already set');
+		}
+	}
+	
 	public function openDirectory($path) {
 		return new Directory($path);
 	}
@@ -134,7 +144,17 @@ class API
 		return new SQLite($this, $filename);
 	}
 	
-	public function useDatabase($hostname, $username, $password, $database, $use_unix_socket = false) {
+	public function openPostgreSQLDatabase($hostname, $username, $password, $database) {
+		require_once SPINDASH_DB . 'postgresql.inc.php';
+		require_once SPINDASH_DB . 'model.inc.php';
+		require_once SPINDASH_DB . 'model-manager.inc.php';
+		require_once SPINDASH_DB . 'record-filter.inc.php';
+		require_once SPINDASH_DB . 'statement.inc.php';
+		
+		return new PostgreSQL($this, $hostname, $username, $password, $database);
+	}
+	
+	public function useMySQL($hostname, $username, $password, $database, $use_unix_socket = false) {
 		if(is_null($this->default_database)) {
 			$this->default_database = $this->openDatabase($hostname, $username, $password, $database, $use_unix_socket);
 		} else {
@@ -142,9 +162,21 @@ class API
 		}
 	}
 	
-	public function useSQLiteDatabase($filename) {
+	public function useDatabase($hostname, $username, $password, $database, $use_unix_socket = false) {
+		return $this->useMySQL($hostname, $username, $password, $database, $use_unix_socket);
+	}
+	
+	public function useSQLite($filename) {
 		if(is_null($this->default_database)) {
 			$this->default_database = $this->openSQLiteDatabase($filename);
+		} else {
+			throw new CoreException('Default database is already initialized');
+		}
+	}
+	
+	public function usePostgreSQL($hostname, $username, $password, $database) {
+		if(is_null($this->default_database)) {
+			$this->default_database = $this->openPostgreSQLDatabase($hostname, $username, $password, $database);
 		} else {
 			throw new CoreException('Default database is already initialized');
 		}
@@ -372,5 +404,9 @@ class API
 	
 	public function handleException(\Exception $e) {
 		die($this->simplePage('General error', $e->getMessage(), 'This could happen because of an error in the web application’s code, settings or database. If you are the owner of this website, contact your web programming staff.'));
+	}
+	
+	public function debug() {
+		return $this->debug;
 	}
 }
