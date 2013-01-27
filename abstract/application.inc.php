@@ -20,7 +20,7 @@ abstract class Application extends API implements IApplication
 	private $settings = array();
 	
 	public function __construct($configuration_file_name) {
-		parent::__construct();
+		parent::__construct(PHP_SAPI == 'cli' ? API::FRONTEND_FASTCGI : API::FRONTEND_BASIC);
 		$this->initializeConfiguration($configuration_file_name);
 		
 		if(method_exists($this, 'routeMap')) {

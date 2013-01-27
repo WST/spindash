@@ -342,16 +342,24 @@ class API
 	}
 	
 	private function handleFastCGIClient($client) {
-		// TODO: parse and process the request, and send back the response
+		$raw_request = socket_read($client, 65536);
+		$raw_headers = substr($raw_request, 0, $delimiter_position = strpos($raw_request, "\r\n\r\n"));
+		$headers = explode("\r\n", $raw_headers);
+		
+		$test_response = new Response($this);
+		$test_response->setBody('<h1>Hello, world ;)</h1>');
+		
+		$test_response->sendFastCGI($client);
 	}
 	
 	private function fastCGI() {
 		$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-		socket_bind($socket, '127.0.0.1', 9000);
+		socket_bind($socket, '127.0.0.1', 8000);
 		socket_listen($socket);
 		
 		while(($client = socket_accept($socket)) !== false) {
 			$this->handleFastCGIClient($client);
+			socket_close($client);
 		}
 	}
 	

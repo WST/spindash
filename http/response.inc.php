@@ -87,26 +87,35 @@ final class Response extends CoreModule
 		return $this->vary_headers;
 	}
 	
-	public function send() {
-		switch($this->base->frontend()) {
-			case API::FRONTEND_BASIC:
-				header("HTTP/1.1 {$this->status} {$this->statusDescription()}");
-				header("Content-Type: {$this->content_type}");
-				
-				foreach($this->headers as $header_name => $value) {
-					header("{$header_name}: {$value}");
-				}
-				
-				if(count($this->vary_headers)) {
-					header('Vary: ' . implode(', ', $this->vary_headers));
-				}
-				
-				echo $this->body;
-			break;
-			case API::FRONTEND_FASTCGI:
-				// TODO
-			break;
+	public function sendFastCGI($client = 0) {
+		socket_write($client, "HTTP/1.1 {$this->status} {$this->statusDescription()}\r\n");
+		socket_write($client, "Content-Type: {$this->content_type}\r\n");
+		
+		foreach($this->headers as $header_name => $value) {
+			socket_write($client, "{$header_name}: {$value}\r\n");
 		}
+		
+		if(count($this->vary_headers)) {
+			socket_write($client, 'Vary: ' . implode(', ', $this->vary_headers) . "\r\n");
+		}
+		
+		socket_write($client, "\r\n");
+		socket_write($client, $this->body);
+	}
+	
+	public function sendBasic() {
+		header("HTTP/1.1 {$this->status} {$this->statusDescription()}");
+		header("Content-Type: {$this->content_type}");
+		
+		foreach($this->headers as $header_name => $value) {
+			header("{$header_name}: {$value}");
+		}
+		
+		if(count($this->vary_headers)) {
+			header('Vary: ' . implode(', ', $this->vary_headers));
+		}
+		
+		echo $this->body;
 	}
 	
 	public function __toString() {
