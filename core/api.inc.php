@@ -183,7 +183,17 @@ class API
 	}
 	
 	public function database() {
+		if(is_null($this->default_database)) {
+			throw new CoreException('Default database is not initialized yet');
+		}
 		return $this->default_database;
+	}
+	
+	public function layout() {
+		if(is_null($this->default_layout)) {
+			throw new CoreException('Default layout directory is not set');
+		}
+		return $this->default_layout;
 	}
 	
 	private function makeLink($template, $page_number) {
@@ -351,15 +361,17 @@ class API
 			$raw_request .= $recv;
 		}
 		
-		// Creating Request instance
-		$request = new Request($this);
-		$request->parseFastCGIRequest($raw_request);
-		
-		// Time to make an attempt to process our true FastCGI request
-		if(is_object($response = $this->process($request))) {
-			$response->sendFastCGI($client);
-		} else {
-			// Log error
+		try {
+			// Creating Request instance
+			$request = new Request($this);
+			$request->parseFastCGIRequest($raw_request);
+			if(is_object($response = $this->process($request))) {
+				$response->sendFastCGI($client);
+			} else {
+				// Log an error
+			}
+		} catch(CoreException $e) {
+			// Log an error
 		}
 	}
 	

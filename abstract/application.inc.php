@@ -20,7 +20,14 @@ abstract class Application extends API implements IApplication
 	private $settings = [];
 	
 	public function __construct($configuration_file_name) {
-		parent::__construct(PHP_SAPI == 'cli' ? API::FRONTEND_FASTCGI : API::FRONTEND_BASIC);
+		
+		if(PHP_SAPI == 'cli') {
+			global $argv;
+			parent::__construct(API::FRONTEND_FASTCGI);
+		} else {
+			parent::__construct(API::FRONTEND_BASIC);
+		}
+		
 		$this->initializeConfiguration($configuration_file_name);
 		
 		if(method_exists($this, 'routeMap')) {
@@ -40,6 +47,7 @@ abstract class Application extends API implements IApplication
 		
 		if(isset($settings['paths']['layout']['directory'])) {
 			parent::useLayoutDirectory($settings['paths']['layout']['directory'], @ $settings['paths']['layout']['webpath']);
+			parent::layout()->setDefaultExtension($settings['paths']['layout']['filename_extension']);
 		}
 		
 		if(isset($settings['database'])) {

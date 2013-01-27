@@ -44,6 +44,21 @@ final class Request extends CoreModule
 		
 	}
 	
+	private function handleRequestString($raw_data) {
+		if(($delimiter = strpos($raw_data, '?')) !== false) {
+			$this->path = substr($raw_data, 0, $delimiter);
+			$args = explode('&', substr($raw_data, $delimiter + 1));
+			foreach($args as $raw_argument) {
+				$raw_argument = urldecode($raw_argument);
+				$parts = [];
+				preg_match('#^([^=]+)=([^=]*)$#', $raw_argument, $parts);
+				$this->get_variables[$parts[1]] = $parts[2];
+			}
+		} else {
+			$this->path = $raw_data;
+		}
+	}
+	
 	public function parseFastCGIRequest($raw_data) {
 		$raw_headers = substr($raw_data, 0, $delimiter_position = strpos($raw_data, "\r\n\r\n"));
 		$raw_body = substr($raw_data, $delimiter_position + 4);
@@ -51,9 +66,12 @@ final class Request extends CoreModule
 		$headers = explode("\r\n", $raw_headers);
 		
 		$parts = [];
-		preg_match('#^(GET|POST|PUT|HEAD) (.*) HTTP/1\.[01]$#', array_shift($headers), $parts);
+		if(!preg_match('#^(GET|POST|PUT|HEAD) (.*) HTTP/1\.[01]$#', array_shift($headers), $parts)) {
+			throw new CoreException('Broken HTTP request — chrome?');
+		}
+		
 		$this->method = strtolower($parts[1]);
-		$this->path = $parts[2];
+		$this->handleRequestString($parts[2]);
 		
 		foreach($headers as $raw_header) {
 			$parts = [];
@@ -71,6 +89,8 @@ final class Request extends CoreModule
 				break;
 			}
 		}
+		
+		return true;
 	}
 	
 	public function session() {
