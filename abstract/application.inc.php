@@ -89,4 +89,15 @@ abstract class Application extends API implements IApplication
 			}
 		}
 	}
+	
+	public function settings($section = NULL) {
+		if(is_null($section)) {
+			return $this->settings;
+		} else {
+			if(!array_key_exists($section, $this->settings)) {
+				throw new CoreException("Unknown settings key: $section");
+			}
+			return $this->settings[$section];
+		}
+	}
 }
