@@ -108,7 +108,7 @@ class API
 	}
 	
 	public function openDirectory($path) {
-		return new Directory($path);
+		return new Directory($this, $path);
 	}
 
 	public function openSMSGateway($username, $password) {
@@ -313,7 +313,16 @@ class API
 		
 		foreach($this->common_request_handlers as $callback) {
 			if(!is_callable($callback)) continue;
-			@ call_user_func($callback, $request, $response);
+			
+			ob_start();
+			call_user_func($callback, $request, $response);
+			$error = ob_get_contents();
+			ob_clean();
+			
+			if($error != '') {
+				throw new CoreException($error);
+			}
+			
 			if($response->ready()) {
 				return $response;
 			}
