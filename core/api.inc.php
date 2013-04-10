@@ -213,8 +213,7 @@ class API
 				$selected = ($i == $current_page) ? ' class="active"' : '';
 				$pages[$i] = '<li' . $selected . '><a href="' . $this->makeLink($link_template, $i) . '">' . $i . '</a></li>';
 			}
-		}
-		if($pages_to > 10) {
+		} else {
 			for($i = 1; $i <= 5; $i ++) {
 				$selected = ($i == $current_page) ? ' class="active"' : '';
 				$pages[$i] = '<li' . $selected . '><a href="' . $this->makeLink($link_template, $i) . '">' . $i . '</a></li>';
@@ -420,6 +419,13 @@ class API
 	public function openSegaInputFile($filename) {
 		require_once SPINDASH_FILEIO . 'sega-input-file.inc.php';
 		return new SegaInputFile($this, $filename);
+	}
+	
+	public function createRSSFeed($title, $link) {
+		require_once SPINDASH_XML . 'rss-feed-item.inc.php';
+		require_once SPINDASH_XML . 'rss-feed.inc.php';
+		
+		return new RSSFeed($this, $title, $link);
 	}
 	
 	public function simplePage($title, $body, $description = '') {

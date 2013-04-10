@@ -17,7 +17,7 @@ final class RSSFeed extends CoreModule
 	
 	private $title = '';
 	private $link = '';
-	private $language = 'ru';
+	private $language = 'en';
 	private $description = '';
 	private $copyright = '';
 	
@@ -29,7 +29,7 @@ final class RSSFeed extends CoreModule
 		return $this->items;
 	}
 	
-	public function addItem($title, $pub_date, $link, $description) {
+	public function insertItem($title, $pub_date, $link, $description) {
 		$this->items[] = new RSSFeedItem($title, $pub_date, $link, $description);
 	}
 	
@@ -42,9 +42,9 @@ final class RSSFeed extends CoreModule
 		$copyright = htmlspecialchars($this->copyright);
 		
 		$result = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<rss version=\"2.0\">";
-		$result .= "<channel><generator>Spin Dash &lt;http://averkov.web.id/projects/spindash&gt;</generator><title>{$title}</title><link>{$link}</link><description>{$description}</description><language>{$language}</language><copyright>{$copyright}</copyright>";
+		$result .= "<channel><generator>Spin Dash &lt;http://averkov.web.id/projects/spindash&gt;</generator><title>{$title}</title><link>{$link}</link><description>{$description}</description><language>{$language}</language><copyright>{$copyright}</copyright><items>";
 		$result .= implode('', $this->items);
-		$result .= "</channel></rss>";
+		$result .= "</items></channel></rss>";
 		
 		return $result;
 	}

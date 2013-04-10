@@ -20,7 +20,7 @@ final class RSSFeedItem
 	
 	public function __construct($title, $pub_date, $link, $description) {
 		$this->title = $title;
-		$this->pub_date = $pub_date;
+		$this->pub_date = date('r', $pub_date);
 		$this->link = $link;
 		$this->description = $description;
 	}
