@@ -18,6 +18,7 @@ abstract class Application extends API implements IApplication
 	protected $ats = NULL;
 	
 	private $settings = [];
+	private $modules = [];
 	
 	public function __construct($configuration_file_name) {
 		
@@ -99,5 +100,21 @@ abstract class Application extends API implements IApplication
 			}
 			return $this->settings[$section];
 		}
+	}
+	
+	public function moduleInstance($module_name) {
+		if(!array_key_exists($module_name, $this->modules)) {
+			throw new CoreException("Unknown Spin Dash pluggable module: &lt;$module_name&gt;");
+		}
+		return $this->modules[$module_name];
+	}
+	
+	public function registerModule(Module $module) {
+		$module_name = get_class($module);
+		if(array_key_exists($module_name, $this->modules)) {
+			throw new CoreException("Spin Dash pluggable module &lt;$module_name&gt; has already been initialized");
+		}
+		
+		$this->modules[$module_name] = $module;
 	}
 }
