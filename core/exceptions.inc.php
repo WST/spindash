@@ -64,7 +64,7 @@ final class DatabaseException extends CoreException
 {
 	private $pdo_exception = NULL;
 	
-	public function __construct(\PDOException & $pdo_exception) {
+	public function __construct(\PDOException & $pdo_exception, $query_string = NULL) {
 		$this->pdo_exception = & $pdo_exception;
 		parent::__construct($pdo_exception->getMessage());
 	}

@@ -29,15 +29,15 @@ abstract class Database extends CoreModule
 			$this->pdo->exec($query);
 			$this->queries ++;
 		} catch(\PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException($e, $query);
 		}
 	}
 	
 	public function prepare($query) {
 		try {
-			return new Statement($this, $this->pdo->prepare($query));
+			return new Statement($this, $this->pdo->prepare($query), $query);
 		} catch(\PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException($e, $query);
 		}
 	}
 	
