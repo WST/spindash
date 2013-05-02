@@ -17,10 +17,12 @@ final class Statement
 	private $executed = false;
 	private $database = NULL;
 	private $closed = false;
+	private $query_string;
 	
-	public function __construct(Database $database, \PDOStatement $pdo_statement) {
+	public function __construct(Database $database, \PDOStatement $pdo_statement, $query_string = NULL) {
 		$this->database = $database;
 		$this->pdo_statement = $pdo_statement;
+		$this->query_string = $query_string;
 	}
 	
 	public function bindParam($name, & $value) {
@@ -31,7 +33,7 @@ final class Statement
 		try {
 			$this->pdo_statement->execute();
 		} catch(\PDOException $e) {
-			throw new DatabaseException($e);
+			throw new DatabaseException($e, $this->query_string);
 		}
 		$this->executed = true;
 		$this->closed = false;
