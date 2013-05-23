@@ -293,14 +293,17 @@ class API
 			throw new CoreException("Unsupported request method {$type}");
 		}
 		
+		$request_path = $request->requestPath();
+		if(($pos = strpos($request_path, '?')) !== false) $request_path = substr($request_path, 0, $pos);
 		foreach($this->routes[$type] as $k => $v) {
 			$pattern = preg_replace(['#(:[a-z_]+?)#iU', '#(%[a-z_]+?)#iU'], ['([^/]+)', '([\\d]+)'], $k);
 			$matches = [];
-			if(preg_match("#^$pattern$#", $request->requestPath(), $matches)) {
+			if(preg_match("#^$pattern$#", $request_path, $matches)) {
 				return count($matches) > 1 ? [$v, $matches] : [$v];
 			}
 		}
-		throw new CoreException("no route matching {$request->requestPath()}");
+		
+		throw new CoreException("no route matching {$request_path}");
 	}
 	
 	private function process(Request $request) {
