@@ -9,9 +9,9 @@
 * Evgeny Bulgakov <evgeny@webline-masters.ru>
 */
 
-namespace ATS;
+namespace SpinDash;
 
-final class PhoneNumber
+final class PhoneNumber extends CoreModule
 {
 	private $country_code;
 	private $operator_code;
@@ -24,7 +24,9 @@ final class PhoneNumber
 	
 	const PHONE_NUMBER_INVALID = 'Invalid phone number';
 	
-	public function __construct($number) {
+	public function __construct(API $base, $number) {
+		parent::__construct($base);
+		
 		$parts = self::validate($number);
 		$this->country_code = $parts[self::RE_PHONE_PART_COUNTRY_CODE];
 		$this->operator_code = $parts[self::RE_PHONE_PART_OPERATOR_CODE];
@@ -48,7 +50,7 @@ final class PhoneNumber
 	}
 	
 	public function __toString() {
-		return "{$this->country_code}{$this->operator_code}{$this->number}";
+		return "+{$this->country_code}{$this->operator_code}{$this->number}";
 	}
 	
 	public function format() {

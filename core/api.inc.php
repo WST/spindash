@@ -440,6 +440,12 @@ class API
 		return new RSSFeed($this, $title, $link);
 	}
 	
+	public function phoneNumber($phone_number_string) {
+		require_once SPINDASH_APIS . 'phone-number.inc.php';
+		
+		return new PhoneNumber($this, $phone_number_string);
+	}
+	
 	public function simplePage($title, $body, $description = '') {
 		$page = new TextFile(SPINDASH_ROOT . 'misc' . DIRECTORY_SEPARATOR . 'simple_page.htt');
 		$page->replace(['{TITLE}', '{BODY}', '{DESCRIPTION}', '{VERSION}'], [ucfirst($title), ucfirst($body), ucfirst($description), SPINDASH_VERSION]);
