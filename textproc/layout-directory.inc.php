@@ -14,7 +14,7 @@ namespace SpinDash;
 final class LayoutDirectory extends Directory
 {
 	private $webpath = '';
-	private $default_extension = '';
+	private $default_extension = NULL;
 	private $global_tags = [];
 	private $templates = [];
 	private $singleton_templates = [];
@@ -63,7 +63,7 @@ final class LayoutDirectory extends Directory
 	
 	public function openTemplate($template_name) {
 		if(!isset($this->templates[$template_name])) {
-			$this->templates[$template_name] = new Template($this->base, $this, $template_name . ((is_null($this->default_extension)) ? '' : '.' . $this->default_extension));
+			$this->templates[$template_name] = new Template($this->base, $this, $template_name . ((is_null($this->default_extension)) ? '' : ('.' . $this->default_extension)));
 		}
 		$this->templates[$template_name]->reset();
 		$this->templates[$template_name]->addTag('webpath', $this->webpath);
