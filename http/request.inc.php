@@ -112,16 +112,16 @@ final class Request extends CoreModule
 		return $this->path;
 	}
 	
-	public function get($variable = NULL) {
-		return $this->fetchVariable($variable, $this->get_variables);
+	public function get($variable = NULL, $default_value = NULL) {
+		return is_null($result = $this->fetchVariable($variable, $this->get_variables)) ? $default_value : $result;
 	}
 	
-	public function post($variable = NULL) {
-		return $this->fetchVariable($variable, $this->post_variables);
+	public function post($variable = NULL, $default_value = NULL) {
+		return is_null($result = $this->fetchVariable($variable, $this->post_variables)) ? $default_value : $result;
 	}
 	
-	public function cookie($variable = NULL) {
-		return $this->fetchVariable($variable, $this->cookie_variables);
+	public function cookie($variable = NULL, $default_value = NULL) {
+		return is_null($result = $this->fetchVariable($variable, $this->cookie_variables)) ? $default_value : $result;
 	}
 	
 	public function gpc($variable = NULL) {
