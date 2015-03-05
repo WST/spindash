@@ -11,6 +11,10 @@
 
 namespace SpinDash;
 
+define('SPINDASH_ROOT', __DIR__ . DIRECTORY_SEPARATOR);
+
+require SPINDASH_ROOT . 'vendor/autoload.php';
+
 define('SPINDASH_CORE', SPINDASH_ROOT . 'core' . DIRECTORY_SEPARATOR);
 
 // Other core definitions and initialization
@@ -20,3 +24,5 @@ mb_internal_encoding('UTF-8');
 
 // Core API
 require SPINDASH_CORE . 'api.inc.php';
+
+echo "success\n";
