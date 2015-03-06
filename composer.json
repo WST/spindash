@@ -1,1 +1,7 @@
-{"require": { "propel/propel": "~2.0@dev"}}
+{
+	"name": "wst/spindash",
+	"require": {"propel/propel": "~2.0@dev", "twig/twig": "~1.0", "php": ">=5.5.0"},
+	"autoload": {"psr-0": {"SpinDash": "core/"}},
+	"description": "A very basic web framework",
+	"license": "MIT"
+}
