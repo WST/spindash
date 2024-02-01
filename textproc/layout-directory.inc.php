@@ -24,8 +24,6 @@ final class LayoutDirectory extends Directory
 	public function __construct(API $base, $path, $webpath) {
 		parent::__construct($base, $path);
 		
-		require_once 'Twig/Autoloader.php';
-		
 		$this->webpath = $webpath;
 		$settings = $this->base->debug() ? [] : ['cache' => $this->base->cachePath()];
 		try {
